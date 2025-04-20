@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overtime Calculator</title>
+  <script src="script.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+  <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
+    <h2 class="text-xl font-bold mb-4">Overtime Calculator</h2>
+
+    <label class="block mb-2">Tipe OT</label>
+    <select id="type" class="w-full p-2 border rounded mb-4">
+      <option value="1">Week Day (WD)</option>
+      <option value="2">Holiday (HD)</option>
+    </select>
+
+    <label class="block mb-2">Jam Mulai (HH:MM)</label>
+    <input id="start" type="time" class="w-full p-2 border rounded mb-4">
+
+    <label class="block mb-2">Jam Selesai (HH:MM)</label>
+    <input id="end" type="time" class="w-full p-2 border rounded mb-4">
+
+    <button id="calculate" class="bg-blue-500 text-white px-4 py-2 rounded">Hitung OT</button>
+
+    <div id="result" class="mt-4 text-lg font-semibold"></div>
+  </div>
+
+</body></html>
