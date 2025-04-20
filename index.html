@@ -1,31 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overtime Calculator</title>
-  <script src="script.js" defer></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Kalkulator Lembur - Dark Mode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-color: #1E1E1E;
+            --text-color: #f1f1f1;
+            --accent: #4caf50;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--card-color);
+            color: var(--text-color);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            max-width: 400px;
+            width: 100%;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        select, input[type="time"], button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 16px;
+            background-color: #2a2a2a;
+            color: var(--text-color);
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #43a047;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #80cbc4;
+            text-align: center;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 p-4">
-  <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
-    <h2 class="text-xl font-bold mb-4">Overtime Calculator</h2>
+<body>
 
-    <label class="block mb-2">Tipe OT</label>
-    <select id="type" class="w-full p-2 border rounded mb-4">
-      <option value="1">Week Day (WD)</option>
-      <option value="2">Holiday (HD)</option>
-    </select>
+<div class="container">
+    <h1>Kalkulator Lembur</h1>
+    <form id="otForm">
+        <label for="typeDay">Tipe OT:</label>
+        <select id="typeDay" required>
+            <option value="WD">Week Day</option>
+            <option value="HD">Holiday</option>
+        </select>
 
-    <label class="block mb-2">Jam Mulai (HH:MM)</label>
-    <input id="start" type="time" class="w-full p-2 border rounded mb-4">
+        <label for="start">Waktu Mulai (HH:MM):</label>
+        <input type="time" id="start" required>
 
-    <label class="block mb-2">Jam Selesai (HH:MM)</label>
-    <input id="end" type="time" class="w-full p-2 border rounded mb-4">
+        <label for="end">Waktu Selesai (HH:MM):</label>
+        <input type="time" id="end" required>
 
-    <button id="calculate" class="bg-blue-500 text-white px-4 py-2 rounded">Hitung OT</button>
+        <button type="submit">Hitung Lembur</button>
+    </form>
 
-    <div id="result" class="mt-4 text-lg font-semibold"></div>
-  </div>
+    <div class="result" id="result"></div>
+</div>
 
-</body></html>
+<script>
+    function calculateOT(type, startTime, endTime) {
+        const [startHour, startMinute] = startTime.split(":").map(Number);
+        const [endHour, endMinute] = endTime.split(":").map(Number);
+
+        const start = new Date();
+        start.setHours(startHour, startMinute, 0);
+
+        const end = new Date();
+        end.setHours(endHour, endMinute, 0);
+
+        const diff = (end - start) / 3600000; // in hours
+        if (diff <= 0) return "Durasi tidak valid.";
+
+        let hasil = 0;
+
+        if (type === "WD") {
+            if (diff === 1) {
+                hasil = 1.5;
+            } else if (diff > 1 && diff < 7) {
+                hasil = (diff - 1) * 2 + 0.5;
+            } else if (diff >= 7) {
+                hasil = (diff - 1) * 2 + 1.5;
+            }
+            return `Hasil (WD): ${hasil.toFixed(2)} jam lembur`;
+        }
+
+        if (type === "HD") {
+            if (diff < 7) {
+                hasil = diff * 2;
+            } else if (diff === 7) {
+                hasil = diff * 2 + 1.5;
+            } else if (diff === 8) {
+                hasil = 17;
+            } else if (diff > 8) {
+                hasil = (diff - 8) * 4 + 17;
+            }
+            return `Hasil (HD): ${hasil.toFixed(2)} jam lembur`;
+        }
+
+        return "Tipe OT tidak dikenali.";
+    }
+
+    document.getElementById("otForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const type = document.getElementById("typeDay").value;
+        const start = document.getElementById("start").value;
+        const end = document.getElementById("end").value;
+
+        const result = calculateOT(type, start, end);
+        document.getElementById("result").textContent = result;
+    });
+</script>
+
+</body>
+</html>
